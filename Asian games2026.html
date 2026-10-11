@@ -1,0 +1,542 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Asiad India Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky masthead + sport rail on top; main column (slider, then browse by game) beside a vertical medal-table sidebar on the right; sidebar drops below on phones. */
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --ink:#0E1A2B; --muted:#586577; --line:#D7DDE6;
+  --accent:#D9600B; --accent-ink:#FFFFFF; --soft:#E6EBF2;
+  --gold:#B8860B; --silver:#7C8796; --bronze:#A8602F; --win:#12794A;
+  --slide-a:#0E1A2B; --slide-b:#1C2F4D; --slide-ink:#F4F6FA; --slide-mute:#B4C0D2; --slide-accent:#FF9A4D;
+  --f-display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --f-body:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A111D; --surface:#111B2D; --ink:#E7ECF4; --muted:#92A0B5; --line:#22304A; --accent:#FF8A3D; --accent-ink:#1A0E03; --soft:#192640;
+  --gold:#E3B341; --silver:#A9B3C2; --bronze:#D78A55; --win:#4CC38A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A111D; --surface:#111B2D; --ink:#E7ECF4; --muted:#92A0B5; --line:#22304A; --accent:#FF8A3D; --accent-ink:#1A0E03; --soft:#192640;
+  --gold:#E3B341; --silver:#A9B3C2; --bronze:#D78A55; --win:#4CC38A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin-inline:auto;padding-inline:16px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* masthead */
+.mast{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.mast-row{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;text-decoration:none;line-height:1}
+.brand b{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:.02em;text-transform:uppercase}
+.brand b i{font-style:normal;color:var(--accent)}
+.brand small{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
+.search{position:relative;flex:1 1 280px;min-width:0;max-width:520px;margin-left:auto}
+.search input{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.search input::placeholder{color:var(--muted)}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 12px 32px rgba(8,16,30,.22);max-height:60vh;overflow:auto;z-index:30}
+.results a{display:flex;align-items:center;gap:10px;padding:10px 14px;text-decoration:none;border-bottom:1px solid var(--line)}
+.results a:last-child{border-bottom:0}
+.results a:hover,.results a:focus-visible{background:var(--soft)}
+.results .t{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:56px}
+.results .m{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap}
+.results .none{padding:14px;color:var(--muted)}
+.theme{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:9px 12px;font-size:14px}
+.rail{border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+.rail ul{display:flex;gap:6px;list-style:none;margin:0;padding:8px 0;width:max-content}
+.rail a{display:block;padding:6px 12px;border-radius:999px;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;color:var(--muted);border:1px solid transparent}
+.rail a:hover{color:var(--ink);background:var(--soft)}
+.rail a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+
+/* grid */
+.page{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding-block:20px 48px}
+@media(min-width:1020px){.page{grid-template-columns:minmax(0,1fr) 330px;align-items:start}}
+main{min-width:0;display:flex;flex-direction:column;gap:32px}
+aside{min-width:0}
+@media(min-width:1020px){aside{position:sticky;top:calc(118px + env(safe-area-inset-top,0px))}}
+h2.sec{font-family:var(--f-display);font-weight:700;font-size:28px;text-transform:uppercase;letter-spacing:.02em;margin:0 0 12px;line-height:1.1;text-wrap:balance}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sec-head p{margin:0;color:var(--muted);font-size:14px}
+
+/* slider */
+.slider{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(120deg,var(--slide-a),var(--slide-b));color:var(--slide-ink);min-height:340px}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:28px 28px 64px;opacity:0;visibility:hidden;transition:opacity .5s}
+.slide.on{opacity:1;visibility:visible;position:relative;min-height:340px}
+.slide::before{content:"";position:absolute;right:-90px;top:-90px;width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,transparent 46%,rgba(255,154,77,.28) 47%,rgba(255,154,77,.28) 49%,transparent 50%,transparent 60%,rgba(255,255,255,.12) 61%,rgba(255,255,255,.12) 62.5%,transparent 63.5%,transparent 74%,rgba(255,154,77,.18) 75%,rgba(255,154,77,.18) 77%,transparent 78%);pointer-events:none}
+.slide>*{position:relative;max-width:640px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--slide-accent)}
+.slide h1{font-family:var(--f-display);font-weight:700;font-size:clamp(34px,6vw,56px);line-height:1;margin:0;text-transform:uppercase;text-wrap:balance}
+.slide p{margin:0;color:var(--slide-mute);font-size:17px}
+.slide .go{align-self:flex-start;margin-top:6px;color:var(--slide-ink);font-weight:600;text-decoration:none;border-bottom:2px solid var(--slide-accent);padding-bottom:1px}
+.slider-ui{position:absolute;left:28px;right:20px;bottom:18px;display:flex;align-items:center;gap:8px;max-width:none}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots button{width:26px;height:5px;border:0;border-radius:3px;background:rgba(255,255,255,.28);padding:0}
+.dots button[aria-current="true"]{background:var(--slide-accent)}
+.arrows{margin-left:auto;display:flex;gap:6px}
+.arrows button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:transparent;color:var(--slide-ink);font-size:16px}
+.arrows button:hover{background:rgba(255,255,255,.14)}
+
+/* stat strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.strip div{padding:14px 16px;border-right:1px solid var(--line);min-width:0}
+.strip div:last-child{border-right:0}
+.strip b{display:block;font-family:var(--f-display);font-size:34px;line-height:1;font-weight:700}
+.strip span{font-size:13px;color:var(--muted)}
+.g{color:var(--gold)} .s{color:var(--silver)} .b{color:var(--bronze)}
+
+/* sport cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.card{display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;text-decoration:none;min-width:0}
+.card:hover{border-color:var(--accent)}
+.card h3{margin:0;font-family:var(--f-display);font-size:22px;text-transform:uppercase;font-weight:600;letter-spacing:.02em;line-height:1.1}
+.card .tot{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.card .row{display:flex;align-items:baseline;gap:8px}
+.mini{display:flex;gap:10px;font-family:var(--f-mono);font-size:13px}
+.d{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:baseline}
+.d.g{background:var(--gold)} .d.s{background:var(--silver)} .d.b{background:var(--bronze)}
+
+/* panels, tables */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.pad{padding:16px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+td a{text-decoration:none;border-bottom:1px solid var(--line)}
+td a:hover{border-color:var(--accent);color:var(--accent)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.pill.g{border-color:var(--gold)} .pill.s{border-color:var(--silver)} .pill.b{border-color:var(--bronze)}
+.pill .d{margin:0}
+.pill.g,.pill.s,.pill.b{color:var(--ink)}
+.note{color:var(--muted);font-size:14px;display:block}
+.teamtag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+
+/* news */
+.news{list-style:none;margin:0;padding:0}
+.news li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.news li:last-child{border-bottom:0}
+.news time{font-family:var(--f-mono);font-size:12px;color:var(--accent);padding-top:3px}
+.news a{text-decoration:none}
+.news a:hover strong{color:var(--accent)}
+.news strong{display:block;font-weight:600}
+.news span{color:var(--muted);font-size:14.5px}
+.upnext{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;border:1px dashed var(--accent);border-radius:10px;background:var(--surface)}
+.upnext b{font-family:var(--f-display);font-size:20px;text-transform:uppercase}
+.upnext span{color:var(--muted);font-size:14.5px}
+
+/* medal table */
+.mt h2{margin:0}
+.mt-head{padding:14px 16px 6px}
+.mt-head small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.mt table{font-size:14.5px}
+.mt td,.mt th{padding:7px 8px}
+.mt td:first-child,.mt th:first-child{padding-left:16px;width:34px}
+.mt td:last-child,.mt th:last-child{padding-right:16px}
+.mt tr.in td{background:color-mix(in srgb,var(--accent) 14%,transparent);font-weight:700}
+.mt .scroll{max-height:520px;overflow:auto}
+.mt .more{width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:11px;font-size:14px;font-weight:600;color:var(--accent)}
+.mt .more:hover{background:var(--soft)}
+.mt thead th{position:sticky;top:0;background:var(--surface)}
+
+/* sport + athlete pages */
+.crumb{font-size:14px;color:var(--muted)}
+.crumb a{color:var(--accent);text-decoration:none;font-weight:600}
+.hd h1{font-family:var(--f-display);font-weight:700;font-size:clamp(40px,7vw,64px);line-height:1;text-transform:uppercase;margin:6px 0 10px}
+.hd .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hd p{max-width:68ch;margin:12px 0 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px;font-size:14px;font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cmp{font-size:14px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--muted);font-size:13.5px}
+footer p{margin:0 0 6px;max-width:90ch}
+@media(max-width:560px){
+  .slide{padding:22px 18px 64px}
+  .slider-ui{left:18px}
+  h2.sec{font-size:25px}
+}
+@media(prefers-reduced-motion:reduce){.slide{transition:none}}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="mast-row">
+      <a class="brand" href="#" id="home-link"><b>Asiad <i>India</i> Desk</b><small>AICHI-NAGOYA 2026 · 19 SEP – 4 OCT</small></a>
+      <div class="search">
+        <input id="q" type="search" autocomplete="off" placeholder="Search a game or player: archery, Neeru, boxing, Gulveer" aria-label="Search games and players">
+        <div class="results" id="results" hidden></div>
+      </div>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark theme">Theme</button>
+    </div>
+    <nav class="rail" aria-label="Games"><ul id="rail"></ul></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page">
+    <main id="view"></main>
+    <aside>
+      <section class="panel mt" aria-label="Medal table">
+        <div class="mt-head">
+          <h2 class="sec">Medal table</h2>
+          <small>Final standings, 4 Oct 2026. Ranked by gold, then silver, then bronze.</small>
+        </div>
+        <div class="scroll" id="mt-scroll"><div class="tablewrap"><table id="mt"></table></div></div>
+        <button class="more" id="mt-more" type="button">Show all 40 nations</button>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Compiled from published reports on the final results (Olympics.com, Outlook India, Business Standard, PTI, iSportsLeague), final as of 5 Oct 2026. This page is a snapshot and has no live feed.</p>
+    <p>Athlete rankings are counted from India's medallist list, with every member of a relay or team credited. Official leaderboards may credit team members differently. India's Hangzhou total is 106 on international tables and 107 by the Government of India's count.</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- DATA ---------- */
+const T=(s)=>s; // team label helper
+const REC=[
+// Gold
+['G','Cricket',"Women's T20",T("India Women's Cricket Team"),'Beat Sri Lanka in the final on 22 Sep. Smriti Mandhana made 79.'],
+['G','Cricket',"Men's T20",T("India Men's Cricket Team"),'Beat Pakistan by 19 runs in the final on 3 Oct to retain the title.'],
+['G','Hockey',"Men's tournament",T("India Men's Hockey Team"),'Beat Malaysia on 3 Oct for a first back-to-back title. LA 2028 place secured.'],
+['G','Hockey',"Women's tournament",T("India Women's Hockey Team"),'Beat China 1-0 on 2 Oct, a first gold since 1982. LA 2028 place secured.'],
+['G','Kabaddi',"Men's team",T("India Men's Kabaddi Team"),'Beat Iran 40-34 in the final on 26 Sep.'],
+['G','Kabaddi',"Women's team",T("India Women's Kabaddi Team"),'Won the final against Iran on 26 Sep.'],
+['G','Shooting','10m air pistol mixed team',['Suruchi Singh','Kamaljeet'],'Asian record of 484.6 on 25 Sep. India\'s first gold in this event.'],
+['G','Shooting',"Women's trap",['Neeru Dhanda'],'First Indian woman to win Asian Games shotgun gold. Asian record.'],
+['G','Shooting','Trap mixed team',['Neeru Dhanda','Kynan Chenai'],'India\'s first mixed trap medal. Asian record of 34/40.'],
+['G','Archery',"Women's individual recurve",['Kumkum Mohod'],'First Indian woman to win this title, on 3 Oct.'],
+['G','Archery',"Women's recurve team",['Ankita Bhakat','Kirti Sharma','Kumkum Mohod'],'Beat South Korea 5-3 on 2 Oct, India\'s first gold in the event.'],
+['G','Archery',"Women's compound team",['Jyothi Surekha Vennam','Prithika Pradeep','Chikitha Taniparthi'],'Part of the compound sweep of team titles on 30 Sep.'],
+['G','Archery',"Men's compound team",['Sahil Jadhav','Kushal Dalal','Ganesh Mani Ratnam Thirumuru'],'Part of the compound sweep of team titles on 30 Sep.'],
+['G','Archery','Compound mixed team',['Chikitha Taniparthi','Sahil Jadhav'],'Brought an LA 2028 quota.'],
+['G','Athletics',"Women's 4x400m relay",['Kiran Pahal','Prachi Choudhary','M.R. Poovamma','Vithya Ramraj'],'India\'s only athletics gold of the Games.'],
+['G','Boxing',"Women's 75kg",['Lovlina Borgohain'],'Second Indian woman after Mary Kom to win Asian Games boxing gold.'],
+['G','Boxing',"Women's 65kg",['Parveen Hooda'],''],
+['G','Boxing',"Men's 80kg",['Ankush Panghal'],''],
+['G','Wrestling','Men\'s freestyle 57kg',['Aman Sehrawat'],'Won on 3 Oct, the last day.'],
+['G','Wrestling','Men\'s freestyle 65kg',['Sujeet Kalkal'],''],
+['G','Golf',"Women's individual",['Pranavi Urs'],'India\'s first Asian Games golf gold, on 3 Oct.'],
+// Silver
+['S','Shooting',"Women's 10m air rifle team",['Elavenil Valarivan','Sonam Maskar','Vidarsa K. Vinod'],'India\'s first medal of the Games, 20 Sep.'],
+['S','Shooting',"Women's 10m air rifle",['Elavenil Valarivan'],'Led for 21 of 24 shots, lost out by 0.6 to Japan\'s Hinata Taichi (252.4 to 253.0).'],
+['S','Shooting',"Men's 10m air rifle team",['Rudrankksh Patil','Himanshu Dhillon','Parth Mane'],''],
+['S','Shooting',"Men's 10m air rifle",['Himanshu Dhillon'],'Silver and bronze were 0.1 apart.'],
+['S','Shooting',"Men's 50m rifle 3 positions team",['Aishwary Pratap Singh Tomar','Rudrankksh Patil','Niraj Kumar'],''],
+['S','Shooting',"Women's 50m rifle 3 positions team",['Ashi Chouksey','Tilottama Sen','Vidarsa K. Vinod'],''],
+['S','Shooting',"Women's 25m pistol",['Esha Singh'],''],
+['S','Shooting',"Women's trap team",['Neeru Dhanda','Manisha Keer','Aashima Ahlawat'],''],
+['S','Weightlifting',"Women's 49kg",['Mirabai Chanu'],'India\'s first weightlifting medal since 1998.'],
+['S','Wushu',"Women's sanda 60kg",['Naorem Roshibina Devi'],''],
+['S','Athletics','Mixed 4x400m relay',['Vishal T.K.','M.R. Poovamma','Manu T.S.','Vithya Ramraj','Jay Kumar','Kiran Pahal'],'Jay Kumar and Kiran Pahal ran in the heats.'],
+['S','Athletics',"Men's 10,000m",['Gulveer Singh'],''],
+['S','Athletics',"Men's 1500m",['Gulveer Singh'],''],
+['S','Athletics',"Men's marathon",['Sawan Barwal'],'National record 2:11:37, ending a 44-year wait for a medal.'],
+['S','Athletics',"Men's shot put",['Tajinderpal Singh Toor'],'20.64m.'],
+['S','Athletics',"Women's long jump",['Ancy Sojan'],'6.53m.'],
+['S','Athletics',"Men's high jump",['Sarvesh Kushare'],''],
+['S','Athletics',"Men's long jump",['Murali Sreeshankar'],''],
+['S','Athletics',"Men's javelin",['Yashvir Singh'],'Stepped in for the injured Neeraj Chopra.'],
+['S','Squash',"Women's singles",['Anahat Singh'],''],
+['S','Squash',"Men's singles",['Abhay Singh'],''],
+['S','Archery',"Men's recurve team",['Dhiraj Bommadevara','Neeraj Chauhan','Yashdeep Bhoge'],''],
+['S','Archery','Recurve mixed team',['Dhiraj Bommadevara','Kumkum Mohod'],''],
+['S','Wrestling',"Women's freestyle 53kg",['Antim Panghal'],''],
+['S','Wrestling',"Men's Greco-Roman 97kg",['Nitesh Siwach'],''],
+['S','Sailing',"Men's skiff",['Prince Noble Kurisinkal','Manu Francis'],''],
+['S','Golf',"Women's team",['Aditi Ashok','Diksha Dagar','Pranavi Urs'],'Finished 14-under 546 across four rounds.'],
+// Bronze
+['B','Shooting',"Men's 10m air rifle",['Rudrankksh Patil'],''],
+['B','Shooting',"Women's skeet team",['Maheshwari Chauhan','Parinaaz Dhaliwal','Raiza Dhillon'],'India\'s first medal in the event.'],
+['B','Shooting',"Men's skeet team",['Anantjeet Singh Naruka','Bhavtegh Singh Gill','Mairaj Ahmad Khan'],''],
+['B','Shooting','Skeet mixed team',['Anantjeet Singh Naruka','Parinaaz Dhaliwal'],''],
+['B','Mixed martial arts',"Women's traditional 60kg",['Suchika Tariyal'],'India\'s first MMA medal.'],
+['B','Badminton',"Men's team",T("India Men's Badminton Team"),'Lost 3-1 to China in the semi-final.'],
+['B','Soft tennis',"Men's singles",['Jay Meena'],''],
+['B','Athletics',"Women's 10,000m",['Seema Kumari'],''],
+['B','Rowing',"Men's double sculls",['Satnam Singh','Salman Khan'],'India\'s first medal in the event.'],
+['B','Athletics',"Women's shot put",['Manpreet Kaur'],''],
+['B','Athletics',"Women's pole vault",['Baranica Elangovan'],'India\'s first medal in the event.'],
+['B','Table tennis','Mixed doubles',['Manush Shah','Diya Chitale'],''],
+['B','Squash','Mixed doubles',['Joshna Chinappa','Velavan Senthilkumar'],''],
+['B','Athletics',"Women's 400m",['Prachi Choudhary'],'53.21s.'],
+['B','Athletics',"Men's decathlon",['Tejaswin Shankar'],''],
+['B','Athletics',"Women's 3000m steeplechase",['Parul Chaudhary'],'National record.'],
+['B','Athletics',"Women's 200m",['Harita Bhadra'],'23.20s.'],
+['B','Athletics',"Women's 5000m",['Parul Chaudhary'],''],
+['B','Athletics',"Men's 5000m",['Gulveer Singh'],''],
+['B','Athletics',"Men's javelin",['Rohit Yadav'],''],
+['B','Athletics',"Women's high jump",['Pooja Singh'],''],
+['B','Athletics',"Women's 400m hurdles",['Vithya Ramraj'],'Broke P.T. Usha\'s 1984 national record.'],
+['B','Athletics',"Men's 4x400m relay",['Dharmveer Choudhary','Manu T.S.','Jay Kumar','Vishal T.K.'],''],
+['B','Athletics','Mixed 4x100m relay',['Gurindervir Singh','Animesh Kujur','Harita Bhadra','Sneha S.S.'],''],
+['B','Archery',"Men's compound individual",['Ganesh Mani Ratnam Thirumuru'],''],
+['B','Archery',"Men's recurve individual",['Neeraj Chauhan'],'Won on 3 Oct.'],
+['B','Boxing',"Men's +90kg",['Narender Berwal'],''],
+['B','Boxing',"Men's 90kg",['Kapil Pokhariya'],''],
+['B','Boxing',"Women's 60kg",['Priya Ghanghas'],''],
+['B','Squash',"Women's team",['Joshna Chinappa','Anahat Singh','Tanvi Khanna'],''],
+['B','Squash',"Men's team",['Abhay Singh','Veer Chotrani','Velavan Senthilkumar'],''],
+['B','Kurash',"Women's 78kg",['Pincky Balhara'],''],
+['B','Wrestling',"Men's freestyle 97kg",['Deepak Punia'],'Won on 3 Oct.'],
+['B','Wrestling',"Men's Greco-Roman 87kg",['Sunil Kumar'],''],
+['B','Sailing',"Women's skiff",['Harshita Tomar','Shital Verma'],''],
+['B','Sailing',"Women's dinghy",['Nethra Kumanan'],''],
+['B','Sepaktakraw',"Men's quadrant",T("India Men's Sepaktakraw Team"),'Lost to Japan in the semi-final.']
+];
+
+const BLURB={
+ 'Athletics':'The biggest source of Indian medals by count, with 24, but only one gold. Gulveer Singh took three medals and Vithya Ramraj won one of each colour. Neeraj Chopra missed the Games through injury, and Yashvir Singh and Rohit Yadav took javelin silver and bronze.',
+ 'Shooting':'Fifteen medals, three of them gold. The first five medals all came in 10m air rifle, and Neeru Dhanda won two golds plus a team silver in trap. Two Asian records were set.',
+ 'Archery':'India\'s best sport for gold, with five. Compound archers swept the team titles, and the recurve archers added a first women\'s team gold and Kumkum Mohod\'s individual title.',
+ 'Boxing':'Three golds in one Games for the first time. Lovlina Borgohain, Parveen Hooda and Ankush Panghal won on the way to six medals.',
+ 'Wrestling':'Two golds after none at Hangzhou. Six medals in all, the best Asian Games wrestling haul since 1962.',
+ 'Squash':'Five medals, led by singles silvers for Anahat Singh and Abhay Singh and a bronze in each team event.',
+ 'Sailing':'A skiff silver for the men and bronzes in the women\'s skiff and dinghy.',
+ 'Cricket':'Both T20 titles retained. The men beat Pakistan by 19 runs in the final and the women beat Sri Lanka.',
+ 'Hockey':'Both teams won gold and booked LA 2028 places. The women\'s first gold since 1982 came against China, and the men beat Malaysia.',
+ 'Kabaddi':'Both teams won, each beating Iran in the final on 26 Sep. The men won 40-34.',
+ 'Golf':'Pranavi Urs won India\'s first Asian Games golf gold, and the women\'s team took silver.',
+ 'Weightlifting':'Mirabai Chanu\'s 49kg silver is India\'s first weightlifting medal since 1998.',
+ 'Wushu':'Naorem Roshibina Devi won sanda 60kg silver.',
+ 'Badminton':'The men\'s team lost 3-1 to China in the semi-final and took bronze.',
+ 'Kurash':'Pincky Balhara won bronze in the women\'s 78kg.',
+ 'Mixed martial arts':'Suchika Tariyal won India\'s first MMA medal, a bronze in traditional 60kg.',
+ 'Rowing':'Satnam Singh and Salman Khan won India\'s first men\'s double sculls medal.',
+ 'Sepaktakraw':'The men\'s quadrant team lost to Japan in the semi-final and took bronze.',
+ 'Soft tennis':'Jay Meena won bronze in the men\'s singles.',
+ 'Table tennis':'Manush Shah and Diya Chitale took mixed doubles bronze.'
+};
+/* India's Hangzhou 2023 medals by sport: G,S,B */
+const H23={'Athletics':[6,14,9],'Shooting':[7,9,6],'Archery':[5,2,2],'Squash':[2,1,2],'Cricket':[2,0,0],'Kabaddi':[2,0,0],'Badminton':[1,1,1],'Hockey':[1,0,1],'Rowing':[0,2,3],'Wrestling':[0,1,5],'Boxing':[0,1,3],'Sailing':[0,1,2],'Golf':[0,1,0],'Wushu':[0,1,0],'Sepaktakraw':[0,0,1],'Table tennis':[0,0,1]};
+
+const NATIONS=[[1,'China',169,89,83,341],[2,'Japan (hosts)',83,95,91,269],[3,'South Korea',39,43,68,150],[4,'India',21,27,37,85],[5,'Uzbekistan',21,25,24,70],[6,'Iran',19,18,15,52],[7,'Thailand',18,13,21,52],[8,'Kazakhstan',12,24,48,84],[9,'Hong Kong, China',11,19,24,54],[10,'Bahrain',11,5,6,22],[11,'Malaysia',9,7,16,32],[12,'North Korea',7,13,9,29],[13,'UAE',7,5,1,13],[14,'Qatar',6,6,6,18],[15,'Chinese Taipei',5,17,33,55],[16,'Indonesia',5,11,23,39],[17,'Philippines',4,9,16,29],[18,'Saudi Arabia',4,3,10,17],[19,'Kuwait',4,1,4,9],[20,'Vietnam',3,3,19,25],[21,'Singapore',2,9,7,18],[22,'Tajikistan',2,5,9,16],[23,'Jordan',2,3,6,11],[24,'Myanmar',2,1,2,5],[25,'Macao, China',1,4,1,6],[26,'Kyrgyzstan',1,3,10,14],[27,'Mongolia',1,1,13,15],[28,'Sri Lanka',1,1,1,3],[29,'Pakistan',0,2,8,10],[30,'Iraq',0,2,3,5],[31,'Turkmenistan',0,2,0,2],[32,'Afghanistan',0,1,2,3],[32,'Lebanon',0,1,2,3],[34,'Oman',0,1,1,2],[35,'Cambodia',0,0,4,4],[36,'Nepal',0,0,2,2],[37,'Bangladesh',0,0,1,1],[37,'Brunei Darussalam',0,0,1,1],[37,'Laos',0,0,1,1],[37,'Syria',0,0,1,1]];
+
+const SLIDES=[
+ {e:'Final result · 4 Oct',h:'India finish 4th with 85 medals',p:'21 gold, 27 silver and 37 bronze across 20 sports. India edged Uzbekistan on silver medals after both finished on 21 golds.',l:'See the medal table',to:''},
+ {e:'Hockey · 2–3 Oct',h:'Hockey double gold',p:'The women beat China 1-0 for their first Asian Games gold since 1982. The men beat Malaysia to defend their title. Both teams are going to LA 2028.',l:'Open Hockey',to:'sport-hockey'},
+ {e:'Cricket · 3 Oct',h:'India beat Pakistan by 19 runs',p:'The men kept the T20 title, and the women had already won theirs against Sri Lanka on 22 Sep.',l:'Open Cricket',to:'sport-cricket'},
+ {e:'Archery · 2–3 Oct',h:'Kumkum Mohod: two golds and a silver',p:'The 17-year-old won the individual recurve title, the first Indian woman to do so, and the women\'s recurve team gold that beat South Korea 5-3.',l:'Open Archery',to:'sport-archery'},
+ {e:'Shooting · 25–26 Sep',h:'Neeru Dhanda takes trap gold',p:'The first individual trap gold for India since 1978, then mixed trap gold with Kynan Chenai in an Asian record. She carried the flag at the closing ceremony.',l:'Open Shooting',to:'sport-shooting'},
+ {e:'Boxing',h:'Three boxing golds for the first time',p:'Lovlina Borgohain (75kg), Parveen Hooda (65kg) and Ankush Panghal (80kg) all won gold.',l:'Open Boxing',to:'sport-boxing'},
+ {e:'Golf · 3 Oct',h:'Pranavi Urs wins India\'s first golf gold',p:'She also anchored the women\'s team to silver, with Aditi Ashok and Diksha Dagar.',l:'Open Golf',to:'sport-golf'},
+ {e:'Athletics · 27 Sep',h:'Vithya Ramraj breaks P.T. Usha\'s record',p:'Her 400m hurdles bronze beat a national mark from 1984. She finished with one medal of each colour.',l:'Open Athletics',to:'sport-athletics'}
+];
+
+const NEWS=[
+ ['4 Oct','Neeru Dhanda carries the flag at the closing ceremony','India end fourth with 85 medals, its second-best Asian Games haul after Hangzhou.','sport-shooting'],
+ ['3 Oct','Nine medals on the last day, five of them gold','Gold came in cricket, golf, wrestling, archery and hockey.',''],
+ ['3 Oct','Aman Sehrawat wins 57kg gold; Antim Panghal and Deepak Punia add silver and bronze','Wrestling ends with two golds, two silvers and two bronzes.','sport-wrestling'],
+ ['2 Oct','Women\'s recurve team beat South Korea 5-3 for gold','India\'s first gold in the event, with Ankita Bhakat, Kirti Sharma and Kumkum Mohod.','sport-archery'],
+ ['30 Sep','Compound archers sweep the three team titles','Women\'s, men\'s and mixed teams all win; the mixed team earns an LA 2028 quota.','sport-archery'],
+ ['26 Sep','Kabaddi: both teams beat Iran','The men won 40-34.','sport-kabaddi'],
+ ['25 Sep','Suruchi Singh and Kamaljeet set an Asian record to win 10m air pistol mixed gold','Their 484.6 was 6.6 clear of South Korea.','sport-shooting'],
+ ['23 Sep','Mirabai Chanu wins 49kg silver','India\'s first weightlifting medal since 1998.','sport-weightlifting'],
+ ['22 Sep','Women\'s cricket team win gold against Sri Lanka','Smriti Mandhana scored 79 and Deepti Sharma took three wickets.','sport-cricket'],
+ ['20 Sep','Women\'s 10m air rifle team win India\'s first medal','Elavenil Valarivan, Sonam Maskar and Vidarsa K. Vinod took silver, and Elavenil added the individual silver.','sport-shooting']
+];
+</script>
+
+<script>
+/* ---------- APP ---------- */
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  var slug=function(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')};
+  var MN={G:'Gold',S:'Silver',B:'Bronze'}, MC={G:'g',S:'s',B:'b'};
+
+  // records
+  var recs=REC.map(function(r){
+    var team=typeof r[3]==='string';
+    return {m:r[0],sport:r[1],event:r[2],who:team?[]:r[3],team:team?r[3]:null,note:r[4]||''};
+  });
+  var sports={}, athletes={};
+  recs.forEach(function(r){
+    var s=sports[r.sport]||(sports[r.sport]={name:r.sport,id:slug(r.sport),G:0,S:0,B:0,recs:[]});
+    s[r.m]++; s.recs.push(r);
+    r.who.forEach(function(n){
+      var a=athletes[n]||(athletes[n]={name:n,id:slug(n),G:0,S:0,B:0,recs:[],sports:{}});
+      a[r.m]++; a.recs.push(r); a.sports[r.sport]=1;
+    });
+  });
+  var sportList=Object.keys(sports).map(function(k){return sports[k]}).sort(function(a,b){
+    var ta=a.G+a.S+a.B, tb=b.G+b.S+b.B; return tb-ta||b.G-a.G||a.name.localeCompare(b.name)});
+  var sportById={}; sportList.forEach(function(s){sportById[s.id]=s});
+  var athById={}; Object.keys(athletes).forEach(function(k){athById[athletes[k].id]=athletes[k]});
+  var rank=function(a,b){return b.G-a.G||b.S-a.S||b.B-a.B||a.name.localeCompare(b.name)};
+  var tot=function(x){return x.G+x.S+x.B};
+
+  var pill=function(m){return '<span class="pill '+MC[m]+'"><span class="d '+MC[m]+'"></span>'+MN[m]+'</span>'};
+  var names=function(r){
+    if(r.team) return '<span>'+esc(r.team)+'</span> <span class="teamtag">Team</span>';
+    return r.who.map(function(n){return '<a href="#athlete-'+athById[slug(n)].id+'">'+esc(n)+'</a>'}).join(', ');
+  };
+
+  // rail
+  $('#rail').innerHTML='<li><a href="#" data-r="">Home</a></li>'+sportList.map(function(s){
+    return '<li><a href="#sport-'+s.id+'" data-r="sport-'+s.id+'">'+esc(s.name)+'</a></li>'}).join('');
+
+  // medal table
+  var mtOpen=false;
+  function renderMT(){
+    var rows=NATIONS.filter(function(n,i){return mtOpen||i<10||n[1]==='India'});
+    $('#mt').innerHTML='<thead><tr><th>#</th><th>Nation</th><th class="r"><span class="d g"></span>G</th><th class="r"><span class="d s"></span>S</th><th class="r"><span class="d b"></span>B</th><th class="r">Tot</th></tr></thead><tbody>'+
+      rows.map(function(n){return '<tr'+(n[1]==='India'?' class="in"':'')+'><td class="num">'+n[0]+'</td><td>'+esc(n[1])+'</td><td class="r num">'+n[2]+'</td><td class="r num">'+n[3]+'</td><td class="r num">'+n[4]+'</td><td class="r num">'+n[5]+'</td></tr>'}).join('')+'</tbody>';
+    $('#mt-more').textContent=mtOpen?'Show top 10':'Show all 40 nations';
+  }
+  $('#mt-more').addEventListener('click',function(){mtOpen=!mtOpen;renderMT()});
+  renderMT();
+
+  // slider
+  var timer=null, cur=0;
+  function stopSlider(){if(timer){clearInterval(timer);timer=null}}
+  function sliderHTML(){
+    return '<section class="slider" aria-roledescription="carousel" aria-label="Recent highlights">'+
+      SLIDES.map(function(s,i){return '<article class="slide'+(i===0?' on':'')+'" aria-hidden="'+(i!==0)+'"><div class="eyebrow">'+esc(s.e)+'</div><h1>'+esc(s.h)+'</h1><p>'+esc(s.p)+'</p><a class="go" href="#'+s.to+'">'+esc(s.l)+' &rarr;</a></article>'}).join('')+
+      '<div class="slider-ui"><div class="dots">'+SLIDES.map(function(s,i){return '<button type="button" data-i="'+i+'" aria-label="Slide '+(i+1)+'" aria-current="'+(i===0)+'"></button>'}).join('')+'</div><div class="arrows"><button type="button" data-d="-1" aria-label="Previous slide">&larr;</button><button type="button" data-d="1" aria-label="Next slide">&rarr;</button></div></div></section>';
+  }
+  function show(i){
+    var sl=document.querySelectorAll('.slide'), dt=document.querySelectorAll('.dots button');
+    if(!sl.length) return;
+    cur=(i+sl.length)%sl.length;
+    sl.forEach(function(el,k){el.classList.toggle('on',k===cur);el.setAttribute('aria-hidden',String(k!==cur))});
+    dt.forEach(function(el,k){el.setAttribute('aria-current',String(k===cur))});
+  }
+  function startSlider(){
+    stopSlider();
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!reduce) timer=setInterval(function(){show(cur+1)},6500);
+  }
+  function wireSlider(){
+    var sl=document.querySelector('.slider'); if(!sl) return;
+    sl.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.i!==undefined) show(+b.dataset.i);
+      if(b.dataset.d!==undefined) show(cur+ +b.dataset.d);
+      startSlider();
+    });
+    sl.addEventListener('mouseenter',stopSlider);
+    sl.addEventListener('mouseleave',startSlider);
+    sl.addEventListener('focusin',stopSlider);
+    startSlider();
+  }
+
+  // views
+  function homeView(){
+    var G=0,S=0,B=0; sportList.forEach(function(s){G+=s.G;S+=s.S;B+=s.B});
+    var top=Object.keys(athletes).map(function(k){return athletes[k]}).sort(function(a,b){return tot(b)-tot(a)||rank(a,b)}).slice(0,10);
+    return sliderHTML()+
+    '<section><div class="strip" aria-label="India\'s final tally">'+
+      '<div><b class="g">'+G+'</b><span>Gold</span></div><div><b class="s">'+S+'</b><span>Silver</span></div><div><b class="b">'+B+'</b><span>Bronze</span></div><div><b>'+(G+S+B)+'</b><span>Total medals</span></div><div><b>4th</b><span>Overall rank</span></div></div></section>'+
+    '<section><div class="sec-head"><h2 class="sec">Browse by game</h2><p>Pick a sport for every Indian medallist and an athlete ranking.</p></div><div class="cards">'+
+      sportList.map(function(s){return '<a class="card" href="#sport-'+s.id+'"><div class="row"><h3>'+esc(s.name)+'</h3><span class="tot">'+tot(s)+'</span></div><div class="mini"><span><span class="d g"></span>'+s.G+'</span><span><span class="d s"></span>'+s.S+'</span><span><span class="d b"></span>'+s.B+'</span></div></a>'}).join('')+'</div></section>'+
+    '<section><div class="sec-head"><h2 class="sec">Top Indian medallists</h2><p>Most medals across all sports</p></div><div class="panel tablewrap"><table><thead><tr><th>#</th><th>Athlete</th><th>Sport</th><th class="r">G</th><th class="r">S</th><th class="r">B</th><th class="r">Total</th></tr></thead><tbody>'+
+      top.map(function(a,i){return '<tr><td class="num">'+(i+1)+'</td><td><a href="#athlete-'+a.id+'">'+esc(a.name)+'</a></td><td>'+esc(Object.keys(a.sports).join(', '))+'</td><td class="r num">'+a.G+'</td><td class="r num">'+a.S+'</td><td class="r num">'+a.B+'</td><td class="r num">'+tot(a)+'</td></tr>'}).join('')+'</tbody></table></div></section>'+
+    '<section><div class="sec-head"><h2 class="sec">Latest from Aichi-Nagoya</h2><p>Newest first</p></div><div class="panel"><ul class="news">'+
+      NEWS.map(function(n){return '<li><time>'+esc(n[0])+'</time><a href="#'+n[3]+'"><strong>'+esc(n[1])+'</strong><span>'+esc(n[2])+'</span></a></li>'}).join('')+'</ul></div></section>'+
+    '<section class="upnext"><b>Up next</b><span>Asian Para Games, Aichi-Nagoya, 18–24 Oct 2026. India sends 121 athletes across six sports.</span></section>';
+  }
+
+  var filt='ALL';
+  function sportView(s){
+    var h=H23[s.name], cmp=h?('Hangzhou 2023: '+h[0]+' gold, '+h[1]+' silver, '+h[2]+' bronze ('+(h[0]+h[1]+h[2])+' medals)'):'No medals in this sport at Hangzhou 2023';
+    var list=s.recs.slice().sort(function(a,b){return 'GSB'.indexOf(a.m)-'GSB'.indexOf(b.m)});
+    var ath=Object.keys(athletes).map(function(k){return athletes[k]}).filter(function(a){return a.sports[s.name]}).map(function(a){
+      var c={name:a.name,id:a.id,G:0,S:0,B:0}; a.recs.forEach(function(r){if(r.sport===s.name)c[r.m]++}); return c}).sort(rank);
+    var rk=0,prev='';
+    var arows=ath.map(function(a,i){var key=a.G+'-'+a.S+'-'+a.B; if(key!==prev){rk=i+1;prev=key}
+      return '<tr><td class="num">'+rk+'</td><td><a href="#athlete-'+a.id+'">'+esc(a.name)+'</a></td><td class="r num">'+a.G+'</td><td class="r num">'+a.S+'</td><td class="r num">'+a.B+'</td><td class="r num">'+tot(a)+'</td></tr>'}).join('');
+    var teamOnly=!ath.length;
+    return '<div class="hd"><div class="crumb"><a href="#">Home</a> / '+esc(s.name)+'</div><h1>'+esc(s.name)+'</h1><div class="row">'+
+      (s.G?'<span class="pill g"><span class="d g"></span>'+s.G+' Gold</span>':'')+(s.S?'<span class="pill s"><span class="d s"></span>'+s.S+' Silver</span>':'')+(s.B?'<span class="pill b"><span class="d b"></span>'+s.B+' Bronze</span>':'')+
+      '<span class="cmp">'+esc(cmp)+'</span></div><p>'+esc(BLURB[s.name]||'')+'</p></div>'+
+    '<section><h2 class="sec">India\'s medals</h2><div class="chips" id="chips">'+
+      [['ALL','All '+tot(s)],['G','Gold '+s.G],['S','Silver '+s.S],['B','Bronze '+s.B]].filter(function(c){return c[0]==='ALL'||s[c[0]]}).map(function(c){return '<button type="button" data-f="'+c[0]+'" aria-pressed="'+(filt===c[0])+'">'+c[1]+'</button>'}).join('')+
+      '</div><div class="panel tablewrap"><table><thead><tr><th>Medal</th><th>Event</th><th>Athletes</th></tr></thead><tbody id="medrows">'+
+      list.map(function(r){return '<tr data-m="'+r.m+'"><td>'+pill(r.m)+'</td><td>'+esc(r.event)+(r.note?'<span class="note">'+esc(r.note)+'</span>':'')+'</td><td>'+names(r)+'</td></tr>'}).join('')+'</tbody></table></div></section>'+
+    (teamOnly?'<section><p class="note">All of India\'s medals here are team results, so there is no individual ranking.</p></section>':
+    '<section><h2 class="sec">Athlete ranking</h2><div class="panel tablewrap"><table><thead><tr><th>#</th><th>Athlete</th><th class="r">G</th><th class="r">S</th><th class="r">B</th><th class="r">Total</th></tr></thead><tbody>'+arows+'</tbody></table></div>'+
+    '<p class="note" style="margin-top:8px">Ranked by gold, then silver, then bronze. Team and relay members each get credit. Large squads such as '+esc(s.recs.filter(function(r){return r.team}).map(function(r){return r.team}).join(', ')||'hockey and cricket')+' count as team results only.</p></section>');
+  }
+  function applyFilter(){
+    document.querySelectorAll('#medrows tr').forEach(function(tr){tr.hidden=!(filt==='ALL'||tr.dataset.m===filt)});
+    document.querySelectorAll('#chips button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.f===filt))});
+  }
+  function athleteView(a){
+    var sp=Object.keys(a.sports);
+    return '<div class="hd"><div class="crumb"><a href="#">Home</a> / '+sp.map(function(n){return '<a href="#sport-'+slug(n)+'">'+esc(n)+'</a>'}).join(', ')+' / '+esc(a.name)+'</div><h1>'+esc(a.name)+'</h1><div class="row">'+
+      (a.G?'<span class="pill g"><span class="d g"></span>'+a.G+' Gold</span>':'')+(a.S?'<span class="pill s"><span class="d s"></span>'+a.S+' Silver</span>':'')+(a.B?'<span class="pill b"><span class="d b"></span>'+a.B+' Bronze</span>':'')+
+      '<span class="cmp">'+tot(a)+' medal'+(tot(a)>1?'s':'')+' at Aichi-Nagoya 2026</span></div></div>'+
+    '<section><div class="panel tablewrap"><table><thead><tr><th>Medal</th><th>Sport</th><th>Event</th><th>With</th></tr></thead><tbody>'+
+      a.recs.slice().sort(function(x,y){return 'GSB'.indexOf(x.m)-'GSB'.indexOf(y.m)}).map(function(r){
+        var mates=r.who.filter(function(n){return n!==a.name});
+        return '<tr><td>'+pill(r.m)+'</td><td><a href="#sport-'+slug(r.sport)+'">'+esc(r.sport)+'</a></td><td>'+esc(r.event)+(r.note?'<span class="note">'+esc(r.note)+'</span>':'')+'</td><td>'+(mates.length?mates.map(function(n){return '<a href="#athlete-'+slug(n)+'">'+esc(n)+'</a>'}).join(', '):'<span class="note">Individual</span>')+'</td></tr>'}).join('')+'</tbody></table></div></section>';
+  }
+
+  var view=$('#view');
+  function route(){
+    stopSlider();
+    var h=decodeURIComponent((location.hash||'').replace(/^#/,''));
+    var cur_r='';
+    if(h.indexOf('sport-')===0&&sportById[h.slice(6)]){var s=sportById[h.slice(6)]; filt='ALL'; view.innerHTML=sportView(s); cur_r=h; document.title='Asiad India Desk'}
+    else if(h.indexOf('athlete-')===0&&athById[h.slice(8)]){view.innerHTML=athleteView(athById[h.slice(8)]); var a=athById[h.slice(8)]; cur_r='sport-'+slug(Object.keys(a.sports)[0])}
+    else{view.innerHTML=homeView(); wireSlider()}
+    document.querySelectorAll('#rail a').forEach(function(a){
+      if(a.dataset.r===cur_r) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+    var cur_a=document.querySelector('#rail a[aria-current]'); if(cur_a&&cur_a.scrollIntoView){try{cur_a.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}}
+    if(h) window.scrollTo(0,0);
+  }
+  view.addEventListener('click',function(e){var b=e.target.closest('#chips button'); if(b){filt=b.dataset.f;applyFilter()}});
+  window.addEventListener('hashchange',route);
+  $('#home-link').addEventListener('click',function(e){e.preventDefault(); if(location.hash){location.hash=''} else route()});
+
+  // search
+  var q=$('#q'), box=$('#results');
+  function search(t){
+    t=t.trim().toLowerCase(); if(!t) return [];
+    var out=[];
+    sportList.forEach(function(s){ if(s.name.toLowerCase().indexOf(t)>-1) out.push({t:'Game',n:s.name,m:tot(s)+' medals',h:'sport-'+s.id,k:0}) });
+    Object.keys(athletes).forEach(function(k){var a=athletes[k]; if(a.name.toLowerCase().indexOf(t)>-1) out.push({t:'Player',n:a.name,m:Object.keys(a.sports).join(', ')+' · '+tot(a),h:'athlete-'+a.id,k:1})});
+    // events
+    var seen={};
+    recs.forEach(function(r){var key=r.sport+r.event; if(!seen[key]&&(r.event.toLowerCase().indexOf(t)>-1||(r.team&&r.team.toLowerCase().indexOf(t)>-1))){seen[key]=1; out.push({t:'Event',n:r.event+(r.team?' ('+r.team+')':''),m:r.sport+' · '+MN[r.m],h:'sport-'+slug(r.sport),k:2})}});
+    return out.sort(function(a,b){return a.k-b.k}).slice(0,9);
+  }
+  function renderResults(){
+    var items=search(q.value);
+    if(!q.value.trim()){box.hidden=true;return}
+    box.hidden=false;
+    box.innerHTML=items.length?items.map(function(i){return '<a href="#'+i.h+'"><span class="t">'+i.t+'</span><span>'+esc(i.n)+'</span><span class="m">'+esc(i.m)+'</span></a>'}).join(''):'<div class="none">No game or player matches that. Try a sport name or a surname.</div>';
+  }
+  q.addEventListener('input',renderResults);
+  q.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){var f=box.querySelector('a'); if(f){location.hash=f.getAttribute('href').slice(1); q.value=''; box.hidden=true; q.blur()}}
+    if(e.key==='Escape'){box.hidden=true}
+  });
+  box.addEventListener('click',function(){setTimeout(function(){q.value='';box.hidden=true},0)});
+  document.addEventListener('click',function(e){if(!e.target.closest('.search')) box.hidden=true});
+
+  // theme
+  var root=document.documentElement;
+  $('#theme').addEventListener('click',function(){
+    var dark=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme',dark?'light':'dark');
+  });
+
+  route();
+})();
+</script>
+
+</body></html>
